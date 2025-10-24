@@ -49,8 +49,8 @@ VALUES
 
 -- Create the sales table
 CREATE TABLE sales(
-sale_id INT PRIMARY KEY AUTO_INCREMENT,
-FOREIGN KEY customers(customer_id) REFERENCES customers (customer_id),
+sale_id INT PRIMARY KEY,
+customer_id INT,
 amount DECIMAL(10, 2),
 sale_date DATE NOT NULL
 );
@@ -65,8 +65,8 @@ VALUES
 (5, 105, 6000.00, '2023-03-19');
 
 CREATE TABLE departments(
-    department_id INT PRIMARY KEY AUTO_INCREMENT,
-    department_name VARCHAR(50) NOT NULL
+    department_id INT PRIMARY KEY,
+    department_name VARCHAR(50) 
 );
 
 
@@ -85,7 +85,7 @@ CREATE TABLE orders(
     customer_name VARCHAR(50) NOT NULL,
     order_date DATE NOT NULL,
     order_amount INT
-    );
+);
     
     
     
@@ -117,9 +117,10 @@ CREATE TABLE orders(
    WHERE price = 100;
    
    -- joining using the proper primary and foreign keys
-   SELECT e. name, d.depaerment_name
+   SELECT e. name, e.salary
    FROM employees e
-   INNER JOIN departments d ON e.department_id = d.department_id;
+   INNER JOIN departments d ON e.department_id = d.department_id
+   WHERE d.department_name = 'Finance';
    
 
 -- properly checking for non_null values
@@ -156,3 +157,22 @@ WHERE d.department_name = 'Finance';
 SELECT customer_name
 FROM orders
 WHERE order_amount > 600;
+
+-- Find products priced over the Average price
+-- Identify all products whose price is greater than the average price of all products. 
+SELECT product_name,price
+FROM products
+WHERE price > (SELECT AVG(price) FROM products);
+
+-- Get customers whonhave placed orders over 1000
+-- Retrieve the names of customer who have placed orders with an amount greater than or equal to  1000  
+SELECT DISTINCT customer_name
+FROM orders 
+WHERE order_amount >= 1000
+GROUP BY customer_name;
+
+-- Find Total sales for each customer
+-- calculate the total sales amount for each customer from the sales table
+SELECT customer_id, SUM(amount) AS total_sales
+FROM sales
+GROUP BY customer_id ;
